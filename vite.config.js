@@ -5,6 +5,6 @@ export default defineConfig({
   base: "/reactimagecreator/", // Important for GitHub Pages deployment
   plugins: [react()], // Necessary for React support
   build: {
-    outDir: "build", // Ensures Vite outputs to the correct folder
+    outDir: "dist", // Ensures Vite outputs to the correct folder
   },
 });
