@@ -1,6 +1,5 @@
+// functions/ai.js
 export async function onRequest({ request, env }) {
-  console.log("Received request:", request.method);
-
   // Handle OPTIONS preflight for CORS
   if (request.method === "OPTIONS") {
     return new Response(null, {
@@ -50,7 +49,6 @@ export async function onRequest({ request, env }) {
       },
     });
   } catch (error) {
-    console.error("Error processing request:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }

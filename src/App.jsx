@@ -1,4 +1,3 @@
-// src/App.js (or another component)
 import React, { useState } from 'react';
 
 function App() {
@@ -12,6 +11,9 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setResult(data); // Display or process the returned JSON
     } catch (error) {
