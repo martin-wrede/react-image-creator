@@ -15,7 +15,7 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setResult(data); // Display or process the returned JSON
+      setResult(data);
     } catch (error) {
       console.error("Error fetching AI response:", error);
     }

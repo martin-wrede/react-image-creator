@@ -1,9 +1,8 @@
 export async function onRequest({ request, env }) {
-  console.log("Received request:", request.method);
+  // Add logging to debug the request
+  console.log("Received request:", request.method, request.url);
 
-  // Handle OPTIONS preflight for CORS
   if (request.method === "OPTIONS") {
-    console.log("Handling OPTIONS request for CORS");
     return new Response(null, {
       status: 204,
       headers: {
@@ -14,10 +13,17 @@ export async function onRequest({ request, env }) {
     });
   }
 
-  // Accept only POST requests
   if (request.method !== "POST") {
-    console.log("Method not allowed:", request.method);
-    return new Response("Method Not Allowed", { status: 405 });
+    return new Response(
+      JSON.stringify({ error: `Method ${request.method} not allowed` }),
+      {
+        status: 405,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   }
 
   try {
@@ -57,7 +63,13 @@ export async function onRequest({ request, env }) {
     console.error("Error processing request:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
   }
 }
