@@ -1,6 +1,7 @@
-// functions/ai.js
 export async function onRequest({ request, env }) {
-  // Handle OPTIONS preflight for CORS
+  // Add logging to debug the request
+  console.log("Received request:", request.method, request.url);
+
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -12,14 +13,23 @@ export async function onRequest({ request, env }) {
     });
   }
 
-  // Accept only POST requests
   if (request.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+    return new Response(
+      JSON.stringify({ error: `Method ${request.method} not allowed` }),
+      {
+        status: 405,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   }
 
   try {
     const { prompt } = await request.json();
     if (!prompt) {
+      console.log("Missing 'prompt' field in request body");
       return new Response(
         JSON.stringify({ error: "Missing 'prompt' field" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
@@ -41,6 +51,7 @@ export async function onRequest({ request, env }) {
     });
 
     const data = await apiResponse.json();
+    console.log("OpenAI API response:", data);
 
     return new Response(JSON.stringify(data), {
       headers: {
@@ -49,9 +60,16 @@ export async function onRequest({ request, env }) {
       },
     });
   } catch (error) {
+    console.error("Error processing request:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
   }
 }
